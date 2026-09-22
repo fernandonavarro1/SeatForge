@@ -99,6 +99,8 @@ PostgreSQL constraints and transaction semantics are part of the correctness des
 
 The database should enforce the strongest invariants that can be expressed there, while application/domain logic handles business behavior.
 
+Active-reservation exclusivity is a deliberate exception: it is not expressible as a single-table constraint, and for the MVP it is guaranteed solely by the transactional locking protocol, with no database uniqueness backstop. See `decisions/ADR-004-reservation-concurrency.md`.
+
 ## Snapshot model
 
 A Venue is reusable configuration.
@@ -112,7 +114,11 @@ Venue
 Event
 → EventSection
 → EventSeat
+
+EventSection
 → EventPrice
+
+EventPrice belongs to an EventSection, not to an EventSeat: a tariff is offered per section and is identified by tariff type within it.
 
 The event-specific configuration protects published/historical events from later changes to the reusable venue.
 

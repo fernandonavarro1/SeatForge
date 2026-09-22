@@ -49,7 +49,7 @@ Venue → Section → Seat
 Event-specific configuration:
 
 Event → EventSection → EventSeat
-                         └→ EventPrice
+             └→ EventPrice
 
 Reservations:
 

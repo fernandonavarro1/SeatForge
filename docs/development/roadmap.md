@@ -79,7 +79,7 @@ Implement and test:
 - row-level locking;
 - deterministic lock ordering;
 - active-reservation exclusivity via the transactional locking protocol (see ADR-004; no database uniqueness backstop for the MVP);
-- expired HOLD handling;
+- expired HELD handling;
 - deadlock/serialization-failure retry behavior;
 - concurrent reservation integration tests against real PostgreSQL.
 
