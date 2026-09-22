@@ -1,0 +1,10 @@
+node_modules
+dist
+coverage
+apps/api/src/generated
+package-lock.json
+
+# Documentation is hand-written prose; reformatting it would create churn
+# unrelated to the code changes that touch it.
+*.md
+docs/
