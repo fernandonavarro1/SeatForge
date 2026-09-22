@@ -1,0 +1,16 @@
+// SeatForge database schema.
+//
+// Phase 0 intentionally declares no models: the domain starts in Phase 1
+// with Venue, Section and Seat. See docs/development/roadmap.md.
+//
+// The datasource URL lives in prisma7.config.ts, not here (Prisma 7).
+
+generator client {
+  provider     = "prisma-client"
+  output       = "../src/generated/prisma"
+  moduleFormat = "cjs"
+}
+
+datasource db {
+  provider = "postgresql"
+}
