@@ -1,0 +1,27 @@
+services:
+  postgres:
+    image: postgres:18-alpine
+    container_name: seatforge-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: seatforge
+      POSTGRES_PASSWORD: seatforge
+      POSTGRES_DB: seatforge
+    ports:
+      # 5433 on the host: a native PostgreSQL install may already own 5432.
+      # The container still listens on 5432 internally.
+      - '5433:5432'
+    volumes:
+      # PostgreSQL 18+ expects the mount at /var/lib/postgresql and places the
+      # cluster in a version-specific subdirectory, so pg_upgrade --link works.
+      - seatforge-postgres-data:/var/lib/postgresql
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U seatforge -d seatforge']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+volumes:
+  seatforge-postgres-data:
+    name: seatforge-postgres-data
