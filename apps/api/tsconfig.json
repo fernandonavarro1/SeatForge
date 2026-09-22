@@ -1,0 +1,35 @@
+{
+  "compilerOptions": {
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "target": "ES2023",
+    "lib": ["ES2023"],
+    "types": ["node"],
+    "outDir": "./dist",
+
+    // NestJS dependency injection reads design-time type metadata.
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+
+    // The Prisma 7 client is generated as TypeScript that imports with
+    // explicit .ts specifiers; these rewrite them correctly on emit.
+    "allowImportingTsExtensions": true,
+    "rewriteRelativeImportExtensions": true,
+
+    "strict": true,
+    "noImplicitOverride": true,
+    "noUncheckedIndexedAccess": true,
+    "noFallthroughCasesInSwitch": true,
+    "forceConsistentCasingInFileNames": true,
+
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "declaration": false,
+    "sourceMap": true,
+    "incremental": true,
+    "tsBuildInfoFile": "./dist/.tsbuildinfo"
+  },
+  "include": ["src/**/*", "test/**/*", "*.config.ts", "*.config.mts"],
+  "exclude": ["node_modules", "dist"]
+}
