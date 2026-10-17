@@ -63,14 +63,16 @@ Commits use Gitmoji.
 With a task ID:
 
 ```text
-✨ SF-004: implement atomic reservation
+✨ SF-004: Implement atomic reservation
 ```
 
 Without a task ID:
 
 ```text
-✨ implement atomic reservation
+✨ Implement atomic reservation
 ```
+
+The description starts with a capital letter.
 
 The description should explain the meaningful intent of the commit rather than implementation details.
 

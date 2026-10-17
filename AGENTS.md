@@ -107,6 +107,7 @@ Do not generate the entire application from a high-level request without first e
 
   * With task ID: `<gitmoji> SF-<number>: <description>`
   * Without task ID: `<gitmoji> <description>`
+  * The description starts with a capital letter: `✨ Add venue aggregates`, not `✨ add venue aggregates`.
 * Prefer Gitmoji that accurately represents the change. Examples:
 
   * `✨` new functionality
