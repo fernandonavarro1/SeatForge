@@ -1,9 +1,9 @@
 // SeatForge database schema.
 //
-// Phase 0 intentionally declares no models: the domain starts in Phase 1
-// with Venue, Section and Seat. See docs/development/roadmap.md.
-//
 // The datasource URL lives in prisma7.config.ts, not here (Prisma 7).
+//
+// Constraints Prisma cannot express (CHECKs, the citext extension) are added
+// by hand in the migration SQL. See prisma/migrations/.
 
 generator client {
   provider     = "prisma-client"
@@ -13,4 +13,47 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+}
+
+// ---------------------------------------------------------------------------
+// Venue configuration: reusable physical layout (Venue → Section → Seat).
+// Two aggregates on the write side: Venue owns section names, Section owns
+// its seats. See docs/architecture/decisions/ADR-006-venue-aggregates.md.
+// ---------------------------------------------------------------------------
+
+model Venue {
+  id        String    @id @db.Uuid
+  name      String
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+  sections  Section[]
+
+  @@map("venues")
+}
+
+model Section {
+  id        String   @id @db.Uuid
+  venueId   String   @map("venue_id") @db.Uuid
+  // citext: section names are unique per venue regardless of letter case.
+  name      String   @db.Citext
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+  venue     Venue    @relation(fields: [venueId], references: [id], onDelete: Restrict)
+  seats     Seat[]
+
+  @@unique([venueId, name], map: "sections_venue_id_name_key")
+  @@map("sections")
+}
+
+model Seat {
+  id        String   @id @db.Uuid
+  sectionId String   @map("section_id") @db.Uuid
+  // citext: row "a" and row "A" are the same row.
+  row       String   @db.Citext
+  number    Int
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  section   Section  @relation(fields: [sectionId], references: [id], onDelete: Restrict)
+
+  @@unique([sectionId, row, number], map: "seats_section_id_row_number_key")
+  @@map("seats")
 }
