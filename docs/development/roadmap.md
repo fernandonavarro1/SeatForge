@@ -101,9 +101,12 @@ Implement:
 - registration/login;
 - authentication;
 - CUSTOMER vs ORGANIZER authorization;
-- organizer ownership checks.
+- organizer ownership checks;
+- audit trail of organizer/administrator configuration changes (who, what, when), recorded in the backend.
 
 Keep the auth model intentionally simple for the MVP.
+
+The audit trail is a requirement for the backoffice: it must be possible to tell, for example, which employee changed a venue's sections or seats. It belongs to the backend because frontend logs are not reliable evidence. It is deferred to this phase because it needs an authenticated actor; Phase 1 only records timestamps.
 
 ## Phase 7 — HTTP API completion
 
@@ -146,6 +149,13 @@ Observability should help diagnose real behavior rather than exist as ceremony.
 Build the Next.js frontend after the backend contract and core concurrency behavior are stable.
 
 The UI is not the primary engineering challenge of this project.
+
+## Known limitations and open decisions
+
+Deliberately outside the MVP, recorded so they are decided rather than forgotten:
+
+- **Standing / general-admission areas.** Every Section has numbered seats. A standing area (for example a concert floor) would be reserved by capacity, not by seat, which needs a capacity model and a different concurrency strategy (a contended counter rather than per-seat row locks) and would change ReservationItem. It requires its own ADR.
+- **Global uniqueness of `Venue.name`.** Undecided. Two real venues can share a name in different cities; one option is adding a location to Venue so that name plus location is unique.
 
 ## Possible future evolution
 

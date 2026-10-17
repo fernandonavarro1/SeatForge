@@ -19,8 +19,12 @@ Fields:
 
 - id
 - name
+- createdAt
+- updatedAt
 
 A Venue contains reusable physical sections and seats.
+
+Whether `name` must be globally unique is an open decision, deferred beyond the MVP: two real venues can share a name in different cities. One option under consideration is adding a location to Venue so that name plus location identifies it.
 
 ## Section
 
@@ -31,6 +35,14 @@ Fields:
 - id
 - venueId
 - name
+- createdAt
+- updatedAt
+
+Expected invariant:
+
+- `name` is unique within its Venue, compared case-insensitively ("Tribuna Norte" and "tribuna norte" are the same name). Accents are significant. The name is stored trimmed, with the letter case it was entered in, for display.
+
+Every Section is seated. Standing/general-admission areas (capacity without numbered seats) are out of scope for the MVP; see "Known limitations" in `docs/development/roadmap.md`.
 
 ## Seat
 
@@ -40,12 +52,26 @@ Fields:
 
 - id
 - sectionId
-- row
-- number
+- row — non-empty text (`"A"`, `"AA"`, `"12"`), stored trimmed
+- number — positive integer
+- createdAt
 
 Expected invariant:
 
-- `(sectionId, row, number)` is unique.
+- `(sectionId, row, number)` is unique, with `row` compared case-insensitively (row `"a"` is row `"A"`).
+
+Seats are not modified after creation, so they carry no `updatedAt`.
+
+## Venue configuration aggregates
+
+On the write side, venue configuration is split into two aggregates (see `docs/architecture/decisions/ADR-006-venue-aggregates.md`):
+
+- **Venue** holds its own name and the id and name of each of its sections. It enforces section-name uniqueness.
+- **Section** holds its seats. It enforces seat-coordinate uniqueness.
+
+Reads (listing a venue's sections or a section's seats) use dedicated queries and do not load aggregates.
+
+Timestamps are persistence metadata set by the database. Recording *who* changed a venue's configuration requires an authenticated actor and is planned for Phase 6.
 
 ## Event
 

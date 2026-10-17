@@ -2,6 +2,20 @@
 
 These are business and consistency rules that the implementation and tests must preserve.
 
+## Venue configuration
+
+A Section's name is unique within its Venue. Names are compared case-insensitively after trimming surrounding whitespace; accents are significant.
+
+A Seat's `(row, number)` is unique within its Section. `row` is compared case-insensitively after trimming.
+
+`row` must be non-empty text. `number` must be a positive integer.
+
+Venue, Section and Seat text is stored trimmed and is never empty.
+
+These rules are enforced by the Venue and Section aggregates and, as a final guarantee, by the database (`citext` unique indexes and CHECK constraints). When two concurrent writes both pass the aggregate check, the unique index rejects the second.
+
+Venues, Sections and Seats cannot be deleted in the MVP.
+
 ## Reservation atomicity
 
 For a reservation request containing N seats:
